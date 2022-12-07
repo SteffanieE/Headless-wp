@@ -2,8 +2,10 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link';
+// data
+import { getAllPages } from '../lib/api';
 
-export default function Home() {
+export default function Home({ allPages: { edges } }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -20,6 +22,29 @@ export default function Home() {
             blog
           </Link>
         </p>
+
+
+        <section>
+          {edges.map(({ node }) => (
+            <div key={node.id}>
+        {/*       <div className={blogStyles.listitem__thumbnail}>
+                <figure>
+                  <img
+                    src={node.extraPostInfo.thumbImage.mediaItemUrl}
+                    alt={node.title}
+                  />
+                </figure>
+              </div> */}
+              <div>
+                <h2>{node.title}</h2>
+        {/*         <p>{node.extraPostInfo.authorExcerpt}</p> */}
+                <Link href={`/${node.slug}`}>
+                   {node.title}
+                </Link>
+              </div>
+            </div>
+          ))}
+        </section>
       </main>
 
       <footer className={styles.footer}>
@@ -36,4 +61,14 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+
+export async function getStaticProps() {
+  const allPages = await getAllPages();
+  return {
+    props: {
+      allPages
+    }
+  };
 }
